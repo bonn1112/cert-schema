@@ -3,18 +3,17 @@ import json
 import os
 import re
 from copy import deepcopy
-
-import requests
 from pyld import jsonld
 from pyld.jsonld import JsonLdProcessor
 import validators
 
 from cert_schema.errors import *
+from security import safe_requests
 
 try:
-    from urllib.request import urlopen
+    pass
 except ImportError:
-    from urllib2 import urlopen
+    pass
 
 
 SECURITY_CONTEXT_URL = 'https://w3id.org/security/v1'
@@ -125,8 +124,7 @@ def load_document(url):
     """
     result = validators.url(url)
     if result:
-        response = requests.get(
-            url, headers={'Accept': 'application/ld+json, application/json'}
+        response = safe_requests.get(url, headers={'Accept': 'application/ld+json, application/json'}
         )
         return response.text
     raise InvalidUrlError('Could not validate ' + url)
